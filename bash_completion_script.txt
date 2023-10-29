@@ -1,0 +1,24 @@
+Filename completion in bash (or any other shell like zsh, fish, etc.) is a feature of what's known as a "readline library". When you type a few characters and then press the tab key, the readline library looks for any files or directories that start with those characters and completes the rest for you. 
+
+To add such autocompletion for your own program, you need to supply a bash completion script. This is typically placed somewhere like `/etc/bash_completion.d/` or `/usr/share/bash-completion/completions/`. 
+
+The script is written for the `bash-completion` package and it uses the bash `complete` built-in command extensively.
+
+Here is a really basic example of an autocomplete script for a hypothetical python program:
+
+```bash
+#/etc/bash_completion.d/my_script
+
+_my_script() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="--help --verbose --version"
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+}
+complete -F _my
